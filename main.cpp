@@ -1,7 +1,6 @@
 #include <iostream>
 #include "objects.hpp"
 
-std::vector<Polyline> _data;
 
 
 

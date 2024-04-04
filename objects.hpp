@@ -21,6 +21,7 @@ private:
 class Polygon : public Polyline {};
 
 
+extern std::vector<Polyline> _data;
 // поиск по прямоугольной области экрана 
 std::vector<Polyline> find_objects(std::pair<double, double> aLeftTop, 
 									std::pair<double, double> aRightBottom);
