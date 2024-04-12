@@ -1,30 +1,32 @@
 #pragma once
 #include "objects.hpp"
+struct Rect {
+	double ax;
+	double ay;
+	double bx;
+	double by;
+	bool contains( Rect & other);
+	bool contains( Polyline & line);
+	bool overlaps( Rect & other);
+	bool overlaps( Polyline & other);
+	static Rect getAABB(Polyline &poly);
+};
+struct Quad{
+	Quad *nodes[4]={0};
+	Rect bounding_box;
+	std::vector<Polyline *> polylines;
+	Rect get_node_bb(int i);
+	void insert(Polyline *poly,Rect bb);
+	void search(std::vector<Polyline *> &result, Rect screen); 
+};
 class QuadTree {
 	public:
 	QuadTree();
 	void insert(Polyline *poly);
-	void get_inside_box(std::vector<Polyline *> &result,double ax,double ay,double bx,double by);
+	std::vector<Polyline *> get_inside_box( Rect &rect);
 	virtual ~QuadTree();
 
 	protected:
 
-	struct Quad{
-		Quad *nodes[4]={0};
-		Quad *ur(){
-			return nodes[0];
-		}
-		Quad *ul(){
-			return nodes[1];
-		}
-		Quad *dr(){
-			return nodes[2];
-		}
-		Quad *dl(){
-			return nodes[3];
-		}
-		Point point;
-		Polyline *poly;
-	};
 	Quad root;
 };
