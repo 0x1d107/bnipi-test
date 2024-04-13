@@ -141,3 +141,6 @@ std::vector<Polyline *>  QuadTree::get_inside_box(Rect &rect){
 	root.search(polylines,rect);
 	return polylines;
 }
+QuadTree::~QuadTree(){
+
+}

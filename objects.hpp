@@ -1,4 +1,5 @@
 #pragma once
+#include <cmath>
 #include <vector>
 
 struct Point{
@@ -18,10 +19,18 @@ public:
 private:
     std::vector<Point> _points;
 };
-class Polygon : public Polyline {};
+class Polygon : public Polyline {
+	public:
+	Polygon( Point pos, int n,double r=1){
+		std::vector<Point> pts(n);
+		for(int i=0;i<n;i++){
+			pts.push_back({pos.X+std::cos(2*M_PI*i/n)*r,
+						   pos.Y+std::sin(2*M_PI*i/n)*r});
+
+		}
+		set_points(pts);
+	}
+
+};
 
 
-extern std::vector<Polyline> _data;
-// поиск по прямоугольной области экрана 
-std::vector<Polyline> find_objects(std::pair<double, double> aLeftTop, 
-									std::pair<double, double> aRightBottom);
