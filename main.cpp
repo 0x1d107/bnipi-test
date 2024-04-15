@@ -5,10 +5,15 @@
 std::vector<Polyline> _data;
 
 
+QuadTree tree;
 std::vector<Polyline> find_objects(std::pair<double, double> aLeftTop, std::pair<double, double> aRightBottom)
 {
-
-	return _data;
+	Rect screen = {aLeftTop.first,aLeftTop.second,aRightBottom.first,aRightBottom.second};
+	auto visible = tree.get_inside_box(screen);
+	std::vector<Polyline> result;
+	for(Polyline *ptr: visible)
+		result.push_back(*ptr);
+	return result;
 }
 void generate_polygons(){
 	int N = 100;
@@ -25,7 +30,6 @@ void generate_polygons(){
 
 int main(){
 	generate_polygons();
-	QuadTree tree;
 	for(auto &poly:_data){
 		tree.insert(&poly);
 	}
