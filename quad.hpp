@@ -18,6 +18,8 @@ struct Quad{
 	Rect get_node_bb(int i);
 	void insert(Polyline *poly,Rect bb);
 	void search(std::vector<Polyline *> &result, Rect screen); 
+	void print(int depth=0);
+	~Quad();
 };
 class QuadTree {
 	public:

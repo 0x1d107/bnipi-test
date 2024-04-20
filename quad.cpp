@@ -2,7 +2,7 @@
 #include "objects.hpp"
 #include <cfloat>
 #include <vector>
-
+#include <iostream>
 
 bool Rect::contains(Rect &other){
 	return ax <= other.ax && ay <= other.ay && other.bx <= bx && other.by <= by;
@@ -26,16 +26,10 @@ bool Rect::overlaps(Polyline &line){
 	for(int i=1;i< points.size();i++){
 		Point C = points[i-1];
 		Point D = points[i];
-		if(ax<=C.X&&C.X<=bx){
+		if(ax<=C.X&&C.X<=bx && ay<=C.Y&&C.Y<=by){
 			return true;
 		}
-		if(ay<=C.Y&&C.Y<=by){
-			return true;
-		}
-		if(ax<=D.X&&D.X<=bx){
-			return true;
-		}
-		if(ay<=D.Y&&D.Y<=by){
+		if(ax<=D.X&&D.X<=bx&&ay<=D.Y&&D.Y<=by){
 			return true;
 		}
 		//vertical intersection
@@ -60,7 +54,6 @@ bool Rect::overlaps(Polyline &line){
 				return true;	
 			}
 		}
-
 	}
 
 
@@ -120,7 +113,7 @@ void Quad::search(std::vector<Polyline *> &result,Rect screen){
 		if(screen.overlaps(*l))
 			result.push_back(l);
 	for(int i=0;i<4;i++){
-		if(nodes[i]){
+		if(nodes[i]&& nodes[i]->bounding_box.overlaps(screen)){
 			nodes[i]->search(result,screen);
 			
 		}
@@ -128,19 +121,39 @@ void Quad::search(std::vector<Polyline *> &result,Rect screen){
 
 	
 }
+void Quad::print(int depth){
+	for(int i=0;i<depth;i++)
+		std::cout << "  ";
+	std::cout<<"["<<bounding_box.ax<<","<<bounding_box.ay<<" : " <<
+		bounding_box.bx <<","<<bounding_box.by<<"] contains "<<polylines.size()<<" polylines"<<std::endl;
+	for(int i=0;i<4;i++){
+		if(nodes[i]){
+			nodes[i]->print(depth+1);
+		}else {
+			for(int i=0;i<depth+1;i++)
+				std::cout << "  ";
+			std::cout<<"null"<<std::endl;
+		}
+	}
+}
+Quad::~Quad(){
+	for(int i=0;i<4;i++)
+		delete nodes[i];
+}
+
 
 QuadTree::QuadTree(){
-	root.bounding_box = {0,0,1000,1000};
+	root.bounding_box = {0,0,2000,2000};
 }
 void QuadTree::insert(Polyline *poly){
 	root.insert(poly,Rect::getAABB(*poly));
 
 }
 std::vector<Polyline *>  QuadTree::get_inside_box(Rect &rect){
+	//root.print();
 	std::vector<Polyline *> polylines;
 	root.search(polylines,rect);
 	return polylines;
 }
 QuadTree::~QuadTree(){
-
 }

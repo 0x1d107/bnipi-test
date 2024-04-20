@@ -24,10 +24,11 @@ class Polygon : public Polyline {
 	Polygon( Point pos, int n,double r=1){
 		std::vector<Point> pts(n);
 		for(int i=0;i<n;i++){
-			pts.push_back({pos.X+std::cos(2*M_PI*i/n)*r,
-						   pos.Y+std::sin(2*M_PI*i/n)*r});
+			pts[i] = {pos.X+std::cos(2*M_PI*i/n)*r,
+						   pos.Y+std::sin(2*M_PI*i/n)*r};
 
 		}
+		pts.push_back(pts[0]);
 		set_points(pts);
 	}
 

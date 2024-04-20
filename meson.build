@@ -3,4 +3,6 @@ src=[
 	'main.cpp',
 	'quad.cpp',
 ]
-executable('main',src)
+deps=[]
+deps+=dependency('sfml',fallback:['sfml','sfml_dep'])
+executable('polygons',src,dependencies:deps)
