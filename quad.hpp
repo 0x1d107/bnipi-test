@@ -23,7 +23,7 @@ struct Quad{
 };
 class QuadTree {
 	public:
-	QuadTree();
+	QuadTree(double width,double height);
 	void insert(Polyline *poly);
 	std::vector<Polyline *> get_inside_box( Rect &rect);
 	virtual ~QuadTree();

@@ -94,14 +94,17 @@ Rect Quad::get_node_bb(int i){
 		case 3:
 			return {cx,ay,bx,cy};
 	}
-	return {0,0,0,0};
+	Rect r = {0,0,0,0};
+	return r;
 }
 void Quad::insert(Polyline *poly,Rect bb){
 	for(int i=0;i<4;i++){
 		Rect nodebb = get_node_bb(i);
 		if(nodebb.contains(bb)){
-			if(!nodes[i])
-				nodes[i] = new Quad{{0,0,0,0},nodebb,{}};
+			if(!nodes[i]){
+				nodes[i] = new Quad();
+				nodes[i]->bounding_box = nodebb;
+			}
 			nodes[i]->insert(poly,bb);
 			return;
 		}
@@ -142,8 +145,9 @@ Quad::~Quad(){
 }
 
 
-QuadTree::QuadTree(){
-	root.bounding_box = {0,0,2000,2000};
+QuadTree::QuadTree(double width,double height){
+	Rect bb = {0,0,width,height};
+	root.bounding_box = bb;
 }
 void QuadTree::insert(Polyline *poly){
 	root.insert(poly,Rect::getAABB(*poly));

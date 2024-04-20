@@ -1,4 +1,6 @@
 #pragma once
+#include "SFML/System/Vector2.hpp"
+#include "SFML/System/Vector2.hpp"
 #include <cmath>
 #include <vector>
 
@@ -24,8 +26,8 @@ class Polygon : public Polyline {
 	Polygon( Point pos, int n,double r=1){
 		std::vector<Point> pts(n);
 		for(int i=0;i<n;i++){
-			pts[i] = {pos.X+std::cos(2*M_PI*i/n)*r,
-						   pos.Y+std::sin(2*M_PI*i/n)*r};
+			pts[i].X = pos.X+std::cos(2*M_PI*i/n)*r;
+			pts[i].Y = pos.Y+std::sin(2*M_PI*i/n)*r;
 
 		}
 		pts.push_back(pts[0]);
