@@ -7,6 +7,10 @@
 struct Point{
 	double X;
 	double Y;
+	Point operator-(const Point& other);
+	Point operator+(const Point& other);
+	double operator*(const Point& other);
+	double skew(const Point& other);
 };
 class Polyline {
 public:

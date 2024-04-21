@@ -4,6 +4,38 @@
 #include <vector>
 #include <iostream>
 
+Point Point::operator+(const Point &other){
+	Point p = {X+other.X,Y+other.Y};
+	return p;
+}
+Point Point::operator-(const Point &other){
+	Point p = {X-other.X,Y-other.Y};
+	return p;
+}
+double Point::operator*(const Point &other){
+	return X*other.X+Y*other.Y;
+}
+double Point::skew(const Point &other){
+	return X * other.Y - other.X * Y;
+}
+bool line_segments_intersect(Point a1,Point b1, Point a2, Point b2 ){
+
+	Point d1 = b1 - a1;
+	Point d2 = b2 - a2;
+	Point da = d2 - a1;
+	double s12 = d1.skew(d2);
+	if(abs(s12) <=1e-9){
+		if(abs(d1.skew(da))<=1e-9){
+			return true;	
+		}
+		return false;
+	}
+	double t = da.skew(d2)/s12;
+	double u = da.skew(d1)/s12;
+	return 0<=t&&t<=1&&0<=u&&u<=1;
+
+}
+
 bool Rect::contains(Rect &other){
 	return ax <= other.ax && ay <= other.ay && other.bx <= bx && other.by <= by;
 }
@@ -21,7 +53,6 @@ bool Rect::overlaps(Rect &other){
 bool Rect::overlaps(Polyline &line){
 	if (line.get_points().size()<=1)
 		return false;
-	//vertical checks
 	auto points = line.get_points();
 	for(int i=1;i< points.size();i++){
 		Point C = points[i-1];
@@ -32,27 +63,17 @@ bool Rect::overlaps(Polyline &line){
 		if(ax<=D.X&&D.X<=bx&&ay<=D.Y&&D.Y<=by){
 			return true;
 		}
-		//vertical intersection
-		if(D.X!=C.X){
-			double y0 = C.Y + (ax -C.X)*(D.Y-C.Y)/(D.X-C.X); 
-			double y1 = C.Y + (bx -C.X)*(D.Y-C.Y)/(D.X-C.X); 
-			if(ay<=y0&&y0<=by){
-				return true;	
-			}
-			if(ay<=y1&&y1<=by){
-				return true;	
-			}
-		}
-		//horizontal intersection
-		if(D.Y!=C.Y){
-			double x0 = C.X + (ay - C.Y)*(D.X - C.X)/(D.Y-C.Y);
-			double x1 = C.X + (by - C.Y)*(D.X - C.X)/(D.Y-C.Y);
-			if(ax<=x0&&x0<=bx){
-				return true;	
-			}
-			if(ax<=x1&&x1<=bx){
-				return true;	
-			}
+		Point R[4] = {
+			{ax,ay},
+			{ax,by},
+			{bx,by},
+			{bx,ay}
+		};
+		for(int k=0;k<4;k++){
+			Point R1 = R[k];
+			Point R2 = R[(k+1)%4];
+			if(line_segments_intersect(C,D,R1,R2))
+				return true;
 		}
 	}
 
@@ -112,6 +133,8 @@ void Quad::insert(Polyline *poly,Rect bb){
 	polylines.push_back(poly);
 }
 void Quad::search(std::vector<Polyline *> &result,Rect screen){
+	std::cout <<"[Quad::search] ["<<bounding_box.ax<<","<<bounding_box.ay
+		<<"x"<<bounding_box.bx<<","<<bounding_box.by<<"]"<<std::endl;
 	for(auto l:polylines)
 		if(screen.overlaps(*l))
 			result.push_back(l);

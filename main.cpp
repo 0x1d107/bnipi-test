@@ -24,13 +24,13 @@ std::vector<Polyline> find_objects(std::pair<double, double> aLeftTop, std::pair
 	return result;
 }
 void generate_polygons(){
-	int N = 1000000;
+	int N = 500000;
 	srand(119047);
 	for(int i=0;i<N;i++){
 		double x = rand()%10000;
 		double y = rand()%10000;
 		Point v = {x,y};
-		Polygon pol(v,4,3);
+		Polygon pol(v,4,10);
 		_data.push_back(pol);
 	}
 
@@ -47,7 +47,7 @@ void print_visible(std::vector<Polyline *> &visible){
 		}
 		std::cout<<std::endl;
 	}
-	std::cout<<"END VISIBLE"<<std::endl;
+	std::cout<<"END VISIBLE: COUNT="<<visible.size()<<std::endl;
 
 }
 
@@ -98,6 +98,23 @@ int main(){
 					visible = tree.get_inside_box(screen);
 					print_visible(visible);
 					break;
+				case sf::Keyboard::Equal:
+					screen.ax+=screen_delta;
+					screen.ay+=screen_delta;
+					screen.bx-=screen_delta;
+					screen.by-=screen_delta;
+					visible = tree.get_inside_box(screen);
+					print_visible(visible);
+					break;
+				case sf::Keyboard::Hyphen:
+					screen.ax-=screen_delta;
+					screen.ay-=screen_delta;
+					screen.bx+=screen_delta;
+					screen.by+=screen_delta;
+					visible = tree.get_inside_box(screen);
+					print_visible(visible);
+					break;
+
 				default:;
 				}
 			}
